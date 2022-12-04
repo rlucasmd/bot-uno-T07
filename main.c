@@ -22,6 +22,12 @@ typedef struct
   char naipe[5];
 } Card;
 
+// typedef struct
+// {
+//   Card cardOnTable;
+//   char actualNaipe[5];
+// } Table;
+
 typedef struct
 {
   Card *cards;
@@ -32,12 +38,9 @@ typedef struct
 {
   char players[10][MAX_ID_SIZE];
   int players_count;
-} Game;
-
-typedef struct
-{
+  Card table;
   int shouldBuySomeCard;
-} GameStatus;
+} Game;
 
 Card makeCard(char *string)
 {
@@ -204,12 +207,12 @@ int hasScondComplement(Card table)
   return 0;
 }
 
-void readAction(char *action, char *complement, char *secondComplement, Card *table)
+void readAction(char *action, char *complement, char *secondComplement, Game *game)
 {
   if (strcmp(action, "DISCARD") == 0)
   {
-    (*table) = makeCard(complement);
-    if (hasScondComplement(*table))
+    game->table = makeCard(complement);
+    if (hasScondComplement(game->table))
     {
       scanf("%s\n", secondComplement);
     }
@@ -316,7 +319,7 @@ int countNaipesOnHand(Hand myHand)
   return bigger;
 }
 
-Hand cardToDiscard(Card card, Hand myHand, Card *table)
+Hand cardToDiscard(Card card, Hand myHand, Game *game)
 {
   int needsComplement = 0;
   int mostNaipeOnHand = countNaipesOnHand(myHand);
@@ -334,8 +337,10 @@ Hand cardToDiscard(Card card, Hand myHand, Card *table)
   }
   if (needsComplement)
   {
-    strcpy((*table).naipe, choseNaipe(mostNaipeOnHand));
-    printf("DISCARD %s%s %s\n", card.value, card.naipe, choseNaipe(mostNaipeOnHand));
+    char *naipe = choseNaipe(mostNaipeOnHand);
+    strcpy(game->table.naipe, naipe);
+
+    printf("DISCARD %s%s %s\n", card.value, card.naipe, naipe);
     myHand = discard(myHand, card);
   }
   else
@@ -356,9 +361,9 @@ int isAce(Card card)
   return 0;
 }
 
-int makeAChoice(Hand myHand, Card table)
+int makeAChoice(Hand myHand, Game *game)
 {
-  int cardPosition = hasTheCard(myHand, table);
+  int cardPosition = hasTheCard(myHand, game->table);
   if (cardPosition >= 0)
     return cardPosition;
 
@@ -376,15 +381,20 @@ int makeAChoice(Hand myHand, Card table)
   return -1;
 }
 
+void printTable(Card table)
+{
+  char *tableCard = strcat(table.value, table.naipe);
+  debug(tableCard);
+}
+
 int main()
 {
 
   char temp[MAX_LINE];     // string para leitura temporária de dados
   char my_id[MAX_ID_SIZE]; // identificador do seu bot
-
   Hand myHand;
-  Game *game = (Game *)malloc(sizeof(Game *));
-  Card table, discardedCard;
+  Game *game = malloc(sizeof(Game));
+  Card discardedCard;
   int position;
 
   setbuf(stdin, NULL);  // stdin, stdout e stderr não terão buffers
@@ -402,15 +412,14 @@ int main()
   myHand = readHand(temp);
 
   scanf("TABLE %s", temp);
-  table = readTable(temp);
+  game->table = readTable(temp);
 
   // === PARTIDA ===
 
-  // char id[MAX_ID_SIZE];
   char action[MAX_ACTION];
   char complement[MAX_LINE];
   char *secondComplement = (char *)malloc(sizeof(char) * (MAX_LINE + 1));
-  GameStatus gameStatus;
+
   strcpy(secondComplement, "");
 
   while (1)
@@ -420,26 +429,30 @@ int main()
     {
 
       scanf("%s %s", action, complement);
-      readAction(action, complement, secondComplement, &table);
+      readAction(action, complement, secondComplement, game);
       if (strcmp(action, "DISCARD") == 0)
       {
-        int isDrawCard = cardToInt(makeCard(complement));
+        int isDrawCard = cardToInt2(makeCard(complement));
         if (isDrawCard == JACK || isDrawCard == JOKER)
         {
-          gameStatus.shouldBuySomeCard = 1;
+          game->shouldBuySomeCard = 1;
+        }
+        if (isDrawCard == ACE || isDrawCard == JOKER)
+        {
+          strcpy(game->table.naipe, secondComplement);
         }
       }
 
       if (strcmp(action, "BUY") == 0)
       {
-        gameStatus.shouldBuySomeCard = 0;
+        game->shouldBuySomeCard = 0;
       }
 
     } while (strcmp(action, "TURN") || strcmp(complement, my_id));
-
+    printTable(game->table);
     // agora é a vez do seu bot jogar
-    int specialCard = cardToInt2(table);
-    if (gameStatus.shouldBuySomeCard)
+    int specialCard = cardToInt2(game->table);
+    if (game->shouldBuySomeCard)
     {
       switch (specialCard)
       {
@@ -456,14 +469,15 @@ int main()
     {
       if (specialCard == JOKER || specialCard == ACE)
       {
-        if (strcmp(secondComplement, "") != 0)
-          strcpy(table.naipe, secondComplement);
-        position = makeAChoice(myHand, table);
+        // if (strcmp(secondComplement, "") != 0)
+        //   strcpy(table.naipe, secondComplement);
+
+        position = makeAChoice(myHand, game);
         if (position >= 0)
         {
-          table = myHand.cards[position];
+          game->table = myHand.cards[position];
           discardedCard = myHand.cards[position];
-          myHand = cardToDiscard(discardedCard, myHand, &table);
+          myHand = cardToDiscard(discardedCard, myHand, game);
         }
         else
         {
@@ -473,12 +487,12 @@ int main()
       }
       else
       {
-        position = makeAChoice(myHand, table);
+        position = makeAChoice(myHand, game);
         if (position >= 0)
         {
-          table = myHand.cards[position];
+          game->table = myHand.cards[position];
           discardedCard = myHand.cards[position];
-          myHand = cardToDiscard(discardedCard, myHand, &table);
+          myHand = cardToDiscard(discardedCard, myHand, game);
         }
         else
         {
@@ -488,7 +502,7 @@ int main()
       }
     }
 
-    gameStatus.shouldBuySomeCard = 0;
+    game->shouldBuySomeCard = 0;
   }
 
   free(myHand.cards);

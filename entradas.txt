@@ -1,0 +1,5 @@
+PLAYERS b1 b2 b3
+YOU b1
+HAND [ A♠ D♦ A♥ C♣ 2♦ A♦ 8♣ ]
+TABLE A♥
+DISCARD A♥ ♦
