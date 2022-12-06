@@ -341,7 +341,7 @@ int main()
     } while (strcmp(action, "TURN") || strcmp(complement, my_id));
     // printTable(game->table);
     // agora é a vez do seu bot jogar
-    printHand(myHand);
+    // printHand(myHand);
     int specialCard = convertCardToInt(game->table);
     if (game->shouldBuySomeCard)
     {
