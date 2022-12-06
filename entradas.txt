@@ -1,6 +1,5 @@
 PLAYERS b1 b2 b3
 YOU b1
-HAND [ A♠ D♦ A♥ C♣ 2♦ A♦ 8♣ ]
-TABLE A♥
-YOU b1
-DISCARD A♥ ♦
+HAND [ 10♠ D♦ 10♥ C♣ 2♦ A♦ 10♣ ]
+TABLE 10♥
+TURN b1
