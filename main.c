@@ -16,17 +16,19 @@ enum GameCards
   JOKER = 14,
 };
 
+enum Suits
+{
+  HEART = 0,
+  DIAMONDS = 1,
+  CLUB = 2,
+  SPADE = 3,
+};
+
 typedef struct
 {
   char value[5];
   char naipe[5];
 } Card;
-
-// typedef struct
-// {
-//   Card cardOnTable;
-//   char actualNaipe[5];
-// } Table;
 
 typedef struct
 {
@@ -42,57 +44,53 @@ typedef struct
   int shouldBuySomeCard;
 } Game;
 
+char *choseNaipe(int i)
+{
+  if (i == HEART)
+    return "♥";
+  if (i == DIAMONDS)
+    return "♦";
+  if (i == CLUB)
+    return "♣";
+
+  return "♠";
+}
+
+int naipeToInt(char *naipe)
+{
+  if (strcmp(naipe, "♥") == 0)
+    return HEART;
+  if (strcmp(naipe, "♦") == 0)
+    return DIAMONDS;
+  if (strcmp(naipe, "♣") == 0)
+    return CLUB;
+  return SPADE;
+}
+
 Card makeCard(char *string)
 {
-  Card my_card;
-  char *substring;
-  char *parte;
-  char *aux1;
+  char *suits[4];
+  Card myCard;
+  char *naipe;
+  char *aux = (char *)malloc(sizeof(char) * (strlen(string) + 1));
+  strcpy(aux, string);
+  // debug(aux);
 
-  aux1 = malloc(sizeof(char) * (strlen(string) + 1));
-  strcpy(aux1, string);
-  aux1[strlen(string)] = '\0';
-
-  substring = strstr(aux1, "♥");
-  if (substring != NULL)
+  for (int i = 0; i < 4; i++)
   {
-    parte = strtok(aux1, "♥");
-    strcpy(my_card.naipe, "♥");
-    my_card.naipe[strlen("♥")] = '\0';
-  }
-  else
-  {
-    substring = strstr(aux1, "♦");
-    if (substring != NULL)
+    suits[i] = (char *)malloc(sizeof(char) * 4);
+    strcpy(suits[i], choseNaipe(i));
+    naipe = strstr(aux, suits[i]);
+    if (naipe != NULL)
     {
-      parte = strtok(aux1, "♦");
-      strcpy(my_card.naipe, "♦");
-      my_card.naipe[strlen("♦")] = '\0';
-    }
-    else
-    {
-      substring = strstr(aux1, "♣");
-      if (substring != NULL)
-      {
-        parte = strtok(aux1, "♣");
-        strcpy(my_card.naipe, "♣");
-        my_card.naipe[strlen("♣")] = '\0';
-      }
-      else
-      {
-        substring = strstr(aux1, "♠");
-        if (substring != NULL)
-        {
-          parte = strtok(aux1, "♠");
-          strcpy(my_card.naipe, "♠");
-          my_card.naipe[strlen("♠")] = '\0';
-        }
-      }
+      strcpy(myCard.naipe, naipe);
+      char *part;
+      part = strtok(aux, suits[i]);
+      strcpy(myCard.value, part);
+      break;
     }
   }
-  strcpy(my_card.value, parte);
-  my_card.value[strlen(parte)] = '\0';
-  return my_card;
+  return myCard;
 }
 
 Hand readHand(char *entrada)
@@ -219,17 +217,7 @@ void readAction(char *action, char *complement, char *secondComplement, Game *ga
   }
 }
 
-int cardToInt(Card table)
-{
-  int isV = strcmp(table.value, "V");
-  if (isV == 0)
-    return JACK;
-  int isC = strcmp(table.value, "C");
-  if (isC == 0)
-    return JOKER;
-  return 0;
-}
-int cardToInt2(Card card)
+int convertCardToInt(Card card)
 {
   int isV = strcmp(card.value, "V");
   if (isV == 0)
@@ -276,29 +264,6 @@ int checkNaipe(Hand myHand, char *complement)
 
   return -1;
 }
-
-char *choseNaipe(int i)
-{
-  if (i == 0)
-    return "♥";
-  if (i == 1)
-    return "♦";
-  if (i == 2)
-    return "♣";
-  return "♠";
-}
-
-int naipeToInt(char *naipe)
-{
-  if (strcmp(naipe, "♥") == 0)
-    return 0;
-  if (strcmp(naipe, "♦") == 0)
-    return 1;
-  if (strcmp(naipe, "♣") == 0)
-    return 2;
-  return 3;
-}
-
 int countNaipesOnHand(Hand myHand)
 {
   int naipes[4] = {0};
@@ -323,7 +288,7 @@ Hand cardToDiscard(Card card, Hand myHand, Game *game)
 {
   int needsComplement = 0;
   int mostNaipeOnHand = countNaipesOnHand(myHand);
-  switch (cardToInt2(card))
+  switch (convertCardToInt(card))
   {
   case JOKER:
     needsComplement = 1;
@@ -352,15 +317,6 @@ Hand cardToDiscard(Card card, Hand myHand, Game *game)
   return myHand;
 }
 
-int isAce(Card card)
-{
-  if (strcmp(card.value, "A") == 0)
-  {
-    return 1;
-  }
-  return 0;
-}
-
 int makeAChoice(Hand myHand, Game *game)
 {
   int cardPosition = hasTheCard(myHand, game->table);
@@ -371,7 +327,7 @@ int makeAChoice(Hand myHand, Game *game)
 
   for (int i = 0; i < myHand.tam; i++)
   {
-    cardNaipe = cardToInt2(myHand.cards[i]);
+    cardNaipe = convertCardToInt(myHand.cards[i]);
     if ((cardNaipe == JOKER || cardNaipe == ACE))
     {
       return i;
@@ -432,7 +388,7 @@ int main()
       readAction(action, complement, secondComplement, game);
       if (strcmp(action, "DISCARD") == 0)
       {
-        int isDrawCard = cardToInt2(makeCard(complement));
+        int isDrawCard = convertCardToInt(makeCard(complement));
         if (isDrawCard == JACK || isDrawCard == JOKER)
         {
           game->shouldBuySomeCard = 1;
@@ -449,9 +405,9 @@ int main()
       }
 
     } while (strcmp(action, "TURN") || strcmp(complement, my_id));
-    printTable(game->table);
+    // printTable(game->table);
     // agora é a vez do seu bot jogar
-    int specialCard = cardToInt2(game->table);
+    int specialCard = convertCardToInt(game->table);
     if (game->shouldBuySomeCard)
     {
       switch (specialCard)
@@ -469,8 +425,6 @@ int main()
     {
       if (specialCard == JOKER || specialCard == ACE)
       {
-        // if (strcmp(secondComplement, "") != 0)
-        //   strcpy(table.naipe, secondComplement);
 
         position = makeAChoice(myHand, game);
         if (position >= 0)
