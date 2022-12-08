@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "definitions.h"
-#include "card.h"
 
 char suits[4][4] = {{226, 153, 165, 0}, {226, 153, 166, 0}, {226, 153, 163, 0}, {226, 153, 160, 0}};
 

@@ -1,12 +1,12 @@
 BOT_NAME=bot_C
 
-PARAMS= -g -W -pedantic
-
-all: main.c card hand
-	gcc main.c card.o hand.o -o $(BOT_NAME) $(PARAMS)
-
-card: card.c 
-	gcc card.c -c $(PARAMS)
-
+all: main.c hand cards strategy game 
+	gcc main.c hand.o cards.o game.o strategy.o -o $(BOT_NAME) -g -W -pedantic
 hand: hand.c
-	gcc hand.c -c $(PARAMS)
+	gcc hand.c -c -g -W -pedantic
+cards: cards.c
+	gcc cards.c -c -g -W -pedantic
+game: game.c
+	gcc game.c -c -g -W -pedantic
+strategy: strategy.c
+	gcc strategy.c -c -g -W -pedantic

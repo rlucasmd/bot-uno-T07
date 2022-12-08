@@ -3,7 +3,8 @@
 #include <string.h>
 
 #include "definitions.h"
-#include "card.h"
+#include "cards.h"
+#include "strategy.h"
 
 Hand reallocateNCards(Hand myHand, int n)
 {
