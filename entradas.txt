@@ -1,5 +1,5 @@
 PLAYERS b1 b2 b3
 YOU b1
-HAND [ 10♠ D♦ 10♥ C♣ 2♦ A♦ 10♣ ]
-TABLE 10♥
+HAND [ A♥ A♦ A♣ 10♠ 2♦ A♦ 10♣ ]
+TABLE A♥
 TURN b1

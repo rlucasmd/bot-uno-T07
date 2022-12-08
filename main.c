@@ -14,14 +14,7 @@ Hand reallocateNCard(Hand myHand, int n)
 }
 char *choseNaipe(int i)
 {
-  if (i == HEART)
-    return "♥";
-  if (i == DIAMONDS)
-    return "♦";
-  if (i == CLUB)
-    return "♣";
-
-  return "♠";
+  return suits[i];
 }
 
 int naipeToInt(char *naipe)
@@ -37,7 +30,6 @@ int naipeToInt(char *naipe)
 
 Card makeCard(char *string)
 {
-  char *suits[4];
   Card myCard;
   char *naipe;
   char *aux = (char *)malloc(sizeof(char) * (strlen(string) + 1));
@@ -45,8 +37,6 @@ Card makeCard(char *string)
 
   for (int i = 0; i < 4; i++)
   {
-    suits[i] = (char *)malloc(sizeof(char) * 4);
-    strcpy(suits[i], choseNaipe(i));
     naipe = strstr(aux, suits[i]);
     if (naipe != NULL)
     {
@@ -217,15 +207,16 @@ int countNaipesOnHand(Hand myHand)
     num = naipeToInt(myHand.cards[i].naipe);
     naipes[num] += 1;
   }
-  int bigger = -1;
-  for (int i = 0; i < 3; i++)
+  int bigger = -1, pos = -1;
+  for (int i = 0; i < 4; i++)
   {
     if (bigger < naipes[i])
     {
-      bigger = i;
+      bigger = naipes[i];
+      pos = i;
     }
   }
-  return bigger;
+  return pos;
 }
 
 Hand cardToDiscard(Card card, Hand myHand, Game *game)
