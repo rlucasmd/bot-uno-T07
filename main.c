@@ -6,7 +6,7 @@
 /** Constantes para as strings a serem lidas */
 void debug(char *message) { fprintf(stderr, "%s\n", message); }
 
-Hand reallocateNCard(Hand myHand, int n)
+Hand reallocateNCards(Hand myHand, int n)
 {
   int tam = myHand.tam + n;
   myHand.cards = realloc(myHand.cards, (sizeof(Card)) * (tam));
@@ -28,12 +28,12 @@ int naipeToInt(char *naipe)
   return SPADE;
 }
 
-Card makeCard(char *string)
+Card makeCard(char *cardString)
 {
   Card myCard;
   char *naipe;
-  char *aux = (char *)malloc(sizeof(char) * (strlen(string) + 1));
-  strcpy(aux, string);
+  char *aux = (char *)malloc(sizeof(char) * (strlen(cardString) + 1));
+  strcpy(aux, cardString);
 
   for (int i = 0; i < 4; i++)
   {
@@ -53,7 +53,7 @@ Hand buyNCards(Hand myHand, int n)
 {
   char read[5];
   int tam = myHand.tam;
-  myHand = reallocateNCard(myHand, n);
+  myHand = reallocateNCards(myHand, n);
   for (int i = tam; i < tam + n; i++)
   {
     scanf(" %[^\n]\n", read);
@@ -63,7 +63,7 @@ Hand buyNCards(Hand myHand, int n)
   return myHand;
 }
 
-Hand readHand(char *entrada)
+Hand readHand(char *inputString)
 {
   Hand myHand;
   myHand.tam = 7;
@@ -71,7 +71,7 @@ Hand readHand(char *entrada)
   char *aux[7];
   char *parte;
 
-  parte = strtok(entrada, "[ ");
+  parte = strtok(inputString, "[ ");
 
   for (int i = 0; i < 7; i++)
   {
@@ -88,26 +88,17 @@ Hand readHand(char *entrada)
   return myHand;
 }
 
-Hand discard(Hand myHand, Card card)
+Hand discard(Hand myHand, int position)
 {
   int tam = myHand.tam;
-  int comp_value;
-  int comp_naipe;
-  for (int i = 0; i < tam; i++)
+
+  for (int j = position; j < tam - 1; j++)
   {
-    comp_value = strcmp(myHand.cards[i].value, card.value);
-    comp_naipe = strcmp(myHand.cards[i].naipe, card.naipe);
-    if (comp_value == 0 && comp_naipe == 0)
-    {
-      for (int j = i; j < tam - 1; j++)
-      {
-        myHand.cards[j] = myHand.cards[j + 1];
-      }
-      myHand = reallocateNCard(myHand, -1);
-      myHand.tam -= 1;
-      break;
-    }
+    myHand.cards[j] = myHand.cards[j + 1];
   }
+  myHand = reallocateNCards(myHand, -1);
+  myHand.tam -= 1;
+
   return myHand;
 }
 
@@ -194,7 +185,6 @@ int hasTheCard(Hand myHand, Card table)
       return i;
     }
   }
-
   return -1;
 }
 
@@ -219,24 +209,25 @@ int countNaipesOnHand(Hand myHand)
   return pos;
 }
 
-Hand cardToDiscard(Card card, Hand myHand, Game *game)
+Hand cardToDiscard(int position, Hand myHand, Game *game)
 {
-  int cardInt = convertCardToInt(card);
+  int cardInt = convertCardToInt(myHand.cards[position]);
   int needsComplement = (cardInt == JOKER) || (cardInt == ACE);
   int mostNaipeOnHand = countNaipesOnHand(myHand);
+  Card discardedCard = myHand.cards[position];
 
   if (needsComplement)
   {
     char *naipe = choseNaipe(mostNaipeOnHand);
     strcpy(game->table.naipe, naipe);
 
-    printf("DISCARD %s%s %s\n", card.value, card.naipe, naipe);
-    myHand = discard(myHand, card);
+    printf("DISCARD %s%s %s\n", discardedCard.value, discardedCard.naipe, naipe);
+    myHand = discard(myHand, position);
   }
   else
   {
-    printf("DISCARD %s%s\n", card.value, card.naipe);
-    myHand = discard(myHand, card);
+    printf("DISCARD %s%s\n", discardedCard.value, discardedCard.naipe);
+    myHand = discard(myHand, position);
   }
 
   return myHand;
@@ -305,7 +296,6 @@ int main()
 
   while (1)
   {
-
     do
     {
 
@@ -330,9 +320,7 @@ int main()
       }
 
     } while (strcmp(action, "TURN") || strcmp(complement, my_id));
-    // printTable(game->table);
-    // agora é a vez do seu bot jogar
-    // printHand(myHand);
+
     int specialCard = convertCardToInt(game->table);
     if (game->shouldBuySomeCard)
     {
@@ -357,22 +345,7 @@ int main()
         {
           game->table = myHand.cards[position];
           discardedCard = myHand.cards[position];
-          myHand = cardToDiscard(discardedCard, myHand, game);
-        }
-        else
-        {
-          printf("BUY 1\n");
-          myHand = buyNCards(myHand, 1);
-        }
-      }
-      else
-      {
-        position = makeAChoice(myHand, game);
-        if (position >= 0)
-        {
-          game->table = myHand.cards[position];
-          discardedCard = myHand.cards[position];
-          myHand = cardToDiscard(discardedCard, myHand, game);
+          myHand = cardToDiscard(position, myHand, game);
         }
         else
         {
