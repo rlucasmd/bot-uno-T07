@@ -22,27 +22,6 @@ void printHand(Hand myHand)
   fprintf(stderr, " %s%s ]\n", myHand.cards[last].value, myHand.cards[last].naipe);
 }
 
-int hasSecondComplement(Card table)
-{
-  int a = strcmp(table.value, "A");
-  int c = strcmp(table.value, "C");
-  if (a == 0 || c == 0)
-    return 1;
-  return 0;
-}
-
-void readAction(char *action, char *complement, char *secondComplement, Game *game)
-{
-  if (strcmp(action, "DISCARD") == 0)
-  {
-    game->table = makeCard(complement);
-    if (hasSecondComplement(game->table))
-    {
-      scanf("%s\n", secondComplement);
-    }
-  }
-}
-
 void printTable(Card table)
 {
   char *tableCard = strcat(table.value, table.naipe);
