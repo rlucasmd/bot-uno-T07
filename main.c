@@ -2,66 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "definitions.h"
+#include "card.h"
+#include "hand.h"
 
 /** Constantes para as strings a serem lidas */
 void debug(char *message) { fprintf(stderr, "%s\n", message); }
-
-Hand reallocateNCards(Hand myHand, int n)
-{
-  int tam = myHand.tam + n;
-  myHand.cards = realloc(myHand.cards, (sizeof(Card)) * (tam));
-  return myHand;
-}
-char *choseNaipe(int i)
-{
-  return suits[i];
-}
-
-int naipeToInt(char *naipe)
-{
-  if (strcmp(naipe, "♥") == 0)
-    return HEART;
-  if (strcmp(naipe, "♦") == 0)
-    return DIAMONDS;
-  if (strcmp(naipe, "♣") == 0)
-    return CLUB;
-  return SPADE;
-}
-
-Card makeCard(char *cardString)
-{
-  Card myCard;
-  char *naipe;
-  char *aux = (char *)malloc(sizeof(char) * (strlen(cardString) + 1));
-  strcpy(aux, cardString);
-
-  for (int i = 0; i < 4; i++)
-  {
-    naipe = strstr(aux, suits[i]);
-    if (naipe != NULL)
-    {
-      strcpy(myCard.naipe, naipe);
-      char *part;
-      part = strtok(aux, suits[i]);
-      strcpy(myCard.value, part);
-      break;
-    }
-  }
-  return myCard;
-}
-Hand buyNCards(Hand myHand, int n)
-{
-  char read[5];
-  int tam = myHand.tam;
-  myHand = reallocateNCards(myHand, n);
-  for (int i = tam; i < tam + n; i++)
-  {
-    scanf(" %[^\n]\n", read);
-    myHand.cards[i] = makeCard(read);
-    myHand.tam += 1;
-  }
-  return myHand;
-}
 
 Hand readHand(char *inputString)
 {
@@ -85,20 +30,6 @@ Hand readHand(char *inputString)
   {
     myHand.cards[i] = makeCard(aux[i]);
   }
-  return myHand;
-}
-
-Hand discard(Hand myHand, int position)
-{
-  int tam = myHand.tam;
-
-  for (int j = position; j < tam - 1; j++)
-  {
-    myHand.cards[j] = myHand.cards[j + 1];
-  }
-  myHand = reallocateNCards(myHand, -1);
-  myHand.tam -= 1;
-
   return myHand;
 }
 
@@ -154,40 +85,6 @@ void readAction(char *action, char *complement, char *secondComplement, Game *ga
   }
 }
 
-int convertCardToInt(Card card)
-{
-  int isV = strcmp(card.value, "V");
-  if (isV == 0)
-    return JACK;
-  int isC = strcmp(card.value, "C");
-  if (isC == 0)
-    return JOKER;
-  int isA = strcmp(card.value, "A");
-  if (isA == 0)
-    return ACE;
-  return 0;
-}
-
-int canDiscardThisCard(Card table, Card handCard)
-{
-  int result = (strcmp(table.naipe, handCard.naipe) == 0) ||
-               (strcmp(table.value, handCard.value) == 0);
-
-  return result;
-}
-
-int hasTheCard(Hand myHand, Card table)
-{
-  for (int i = 0; i < myHand.tam; i++)
-  {
-    if (canDiscardThisCard(table, myHand.cards[i]))
-    {
-      return i;
-    }
-  }
-  return -1;
-}
-
 int countNaipesOnHand(Hand myHand)
 {
   int naipes[4] = {0};
@@ -207,30 +104,6 @@ int countNaipesOnHand(Hand myHand)
     }
   }
   return pos;
-}
-
-Hand cardToDiscard(int position, Hand myHand, Game *game)
-{
-  int cardInt = convertCardToInt(myHand.cards[position]);
-  int needsComplement = (cardInt == JOKER) || (cardInt == ACE);
-  int mostNaipeOnHand = countNaipesOnHand(myHand);
-  Card discardedCard = myHand.cards[position];
-
-  if (needsComplement)
-  {
-    char *naipe = choseNaipe(mostNaipeOnHand);
-    strcpy(game->table.naipe, naipe);
-
-    printf("DISCARD %s%s %s\n", discardedCard.value, discardedCard.naipe, naipe);
-    myHand = discard(myHand, position);
-  }
-  else
-  {
-    printf("DISCARD %s%s\n", discardedCard.value, discardedCard.naipe);
-    myHand = discard(myHand, position);
-  }
-
-  return myHand;
 }
 
 int makeAChoice(Hand myHand, Game *game)
