@@ -5,3 +5,4 @@ Card readTable(char *);
 void readPlayers(char *, Game *);
 void readAction(Game *);
 int hasSecondComplement(Card);
+void updateGame(Game *);

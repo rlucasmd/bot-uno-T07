@@ -11,27 +11,6 @@
 
 /** Constantes para as strings a serem lidas */
 
-void updateGame(Game *game)
-{
-  if (strcmp(game->gameAction->action, "DISCARD") == 0)
-  {
-    int isDrawCard = convertCardToInt(makeCard(game->gameAction->complement));
-    if (isDrawCard == JACK || isDrawCard == JOKER)
-    {
-      game->shouldBuySomeCard = 1;
-    }
-    if (isDrawCard == ACE || isDrawCard == JOKER)
-    {
-      strcpy(game->table.naipe, game->gameAction->secondComplement);
-    }
-  }
-
-  if (strcmp(game->gameAction->action, "BUY") == 0)
-  {
-    game->shouldBuySomeCard = 0;
-  }
-}
-
 int main()
 {
 
