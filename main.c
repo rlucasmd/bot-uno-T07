@@ -7,26 +7,9 @@
 #include "cards.h"
 #include "game.h"
 #include "strategy.h"
+#include "debugger.h"
 
 /** Constantes para as strings a serem lidas */
-void debug(char *message) { fprintf(stderr, "%s\n", message); }
-
-void printHand(Hand myHand)
-{
-  int last = myHand.tam - 1;
-  fprintf(stderr, "[");
-  for (int i = 0; i < last; i++)
-  {
-    fprintf(stderr, " %s%s,", myHand.cards[i].value, myHand.cards[i].naipe);
-  }
-  fprintf(stderr, " %s%s ]\n", myHand.cards[last].value, myHand.cards[last].naipe);
-}
-
-void printTable(Card table)
-{
-  char *tableCard = strcat(table.value, table.naipe);
-  debug(tableCard);
-}
 
 int main()
 {
@@ -88,7 +71,7 @@ int main()
         game->shouldBuySomeCard = 0;
       }
 
-        } while (strcmp(action, "TURN") || strcmp(complement, my_id));
+    } while (strcmp(action, "TURN") || strcmp(complement, my_id));
 
     int specialCard = convertCardToInt(game->table);
     if (game->shouldBuySomeCard)
@@ -119,7 +102,6 @@ int main()
         myHand = buyNCards(myHand, 1);
       }
     }
-
     game->shouldBuySomeCard = 0;
   }
 
