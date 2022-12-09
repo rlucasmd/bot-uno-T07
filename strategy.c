@@ -27,8 +27,29 @@ int countNaipesOnHand(Hand myHand)
   return pos;
 }
 
+int *cardsPositionCanIDiscard(Hand myHand, Game *game)
+{
+  int *cardsPosition = malloc(sizeof(int));
+  int qtd = 0;
+  cardsPosition[0] = 0;
+
+  for (int i = 0; i < myHand.tam; i++)
+  {
+    if (canDiscardThisCard(myHand.cards[i], game->table))
+    {
+      qtd += 1;
+      cardsPosition = realloc(cardsPosition, (sizeof(int) * (qtd + 1)));
+      cardsPosition[qtd] = i;
+      cardsPosition[0] = qtd;
+    }
+  }
+
+  return cardsPosition;
+}
+
 int makeAChoice(Hand myHand, Game *game)
 {
+  int *cardsPosition = cardsPositionCanIDiscard(myHand, game);
   int cardPosition = hasTheCard(myHand, game->table);
   if (cardPosition >= 0)
     return cardPosition;

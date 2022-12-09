@@ -11,6 +11,27 @@
 
 /** Constantes para as strings a serem lidas */
 
+void updateGame(Game *game)
+{
+  if (strcmp(game->gameAction->action, "DISCARD") == 0)
+  {
+    int isDrawCard = convertCardToInt(makeCard(game->gameAction->complement));
+    if (isDrawCard == JACK || isDrawCard == JOKER)
+    {
+      game->shouldBuySomeCard = 1;
+    }
+    if (isDrawCard == ACE || isDrawCard == JOKER)
+    {
+      strcpy(game->table.naipe, game->gameAction->secondComplement);
+    }
+  }
+
+  if (strcmp(game->gameAction->action, "BUY") == 0)
+  {
+    game->shouldBuySomeCard = 0;
+  }
+}
+
 int main()
 {
 
@@ -18,6 +39,7 @@ int main()
   char my_id[MAX_ID_SIZE]; // identificador do seu bot
   Hand myHand;
   Game *game = malloc(sizeof(Game));
+  game->gameAction = malloc(sizeof(GameAction));
   Card discardedCard;
   int position;
 
@@ -40,38 +62,13 @@ int main()
 
   // === PARTIDA ===
 
-  char action[MAX_ACTION];
-  char complement[MAX_LINE];
-  char *secondComplement = (char *)malloc(sizeof(char) * (MAX_LINE + 1));
-
-  strcpy(secondComplement, "");
-
   while (1)
   {
     do
     {
-
-      scanf("%s %s", action, complement);
-      readAction(action, complement, secondComplement, game);
-      if (strcmp(action, "DISCARD") == 0)
-      {
-        int isDrawCard = convertCardToInt(makeCard(complement));
-        if (isDrawCard == JACK || isDrawCard == JOKER)
-        {
-          game->shouldBuySomeCard = 1;
-        }
-        if (isDrawCard == ACE || isDrawCard == JOKER)
-        {
-          strcpy(game->table.naipe, secondComplement);
-        }
-      }
-
-      if (strcmp(action, "BUY") == 0)
-      {
-        game->shouldBuySomeCard = 0;
-      }
-
-    } while (strcmp(action, "TURN") || strcmp(complement, my_id));
+      readAction(game);
+      updateGame(game);
+    } while (strcmp(game->gameAction->action, "TURN") || strcmp(game->gameAction->complement, my_id));
 
     int specialCard = convertCardToInt(game->table);
     if (game->shouldBuySomeCard)

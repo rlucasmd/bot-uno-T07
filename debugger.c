@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "definitions.h"
 
 void debug(char *message) { fprintf(stderr, "%s\n", message); }

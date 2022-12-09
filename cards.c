@@ -13,11 +13,11 @@ char *choseNaipe(int i)
 
 int naipeToInt(char *naipe)
 {
-  if (strcmp(naipe, "♥") == 0)
+  if (strcmp(naipe, suits[HEART]) == 0)
     return HEART;
-  if (strcmp(naipe, "♦") == 0)
+  if (strcmp(naipe, suits[DIAMONDS]) == 0)
     return DIAMONDS;
-  if (strcmp(naipe, "♣") == 0)
+  if (strcmp(naipe, suits[CLUB]) == 0)
     return CLUB;
   return SPADE;
 }

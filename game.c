@@ -59,14 +59,15 @@ int hasSecondComplement(Card table)
   return 0;
 }
 
-void readAction(char *action, char *complement, char *secondComplement, Game *game)
+void readAction(Game *game)
 {
-  if (strcmp(action, "DISCARD") == 0)
+  scanf("%s %s", game->gameAction->action, game->gameAction->complement);
+  if (strcmp(game->gameAction->action, "DISCARD") == 0)
   {
-    game->table = makeCard(complement);
+    game->table = makeCard(game->gameAction->complement);
     if (hasSecondComplement(game->table))
     {
-      scanf("%s\n", secondComplement);
+      scanf("%s\n", game->gameAction->secondComplement);
     }
   }
 }
