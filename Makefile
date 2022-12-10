@@ -13,3 +13,5 @@ strategy: strategy.c
 	gcc strategy.c -c $(PARAMS)
 move: 
 	mv *.o ./bin
+clean:
+	rm -rf bin/*.o
