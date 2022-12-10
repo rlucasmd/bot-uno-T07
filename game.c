@@ -71,9 +71,24 @@ void readAction(Game *game)
     }
   }
 }
+
+int convertActionToInt(GameAction gameAction)
+{
+  if (strcmp(gameAction.action, "DISCARD") == 0)
+    return DISCARD;
+  if (strcmp(gameAction.action, "BUY") == 0)
+    return BUY;
+  if (strcmp(gameAction.action, "TURN") == 0)
+    return TURN;
+
+  return TURN;
+}
+
 void updateGame(Game *game)
 {
-  if (strcmp(game->gameAction->action, "DISCARD") == 0)
+  int action = convertActionToInt(*((*game).gameAction));
+
+  if (action == DISCARD)
   {
     int isDrawCard = convertCardToInt(makeCard(game->gameAction->complement));
     if (isDrawCard == JACK || isDrawCard == JOKER)
@@ -86,7 +101,7 @@ void updateGame(Game *game)
     }
   }
 
-  if (strcmp(game->gameAction->action, "BUY") == 0)
+  if (action == BUY)
   {
     game->shouldBuySomeCard = 0;
   }

@@ -21,6 +21,13 @@ enum Suits
   SPADE = 3,
 };
 
+enum Actions
+{
+  DISCARD = 0,
+  BUY = 1,
+  TURN = 2,
+};
+
 typedef struct
 {
   char value[3];
