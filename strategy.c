@@ -5,6 +5,7 @@
 #include "definitions.h"
 #include "cards.h"
 #include "hand.h"
+#include "debugger.h"
 
 int countNaipesOnHand(Hand myHand)
 {
@@ -32,10 +33,12 @@ int *cardsPositionCanIDiscard(Hand myHand, Game *game)
   int *cardsPosition = malloc(sizeof(int));
   int qtd = 0;
   cardsPosition[0] = 0;
+  int isSpecial = 0;
 
   for (int i = 0; i < myHand.tam; i++)
   {
-    if (canDiscardThisCard(myHand.cards[i], game->table))
+    isSpecial = convertCardToInt(myHand.cards[i]) == JOKER || convertCardToInt(myHand.cards[i]) == ACE;
+    if (canDiscardThisCard(myHand.cards[i], game->table) || isSpecial == 1)
     {
       qtd += 1;
       cardsPosition = realloc(cardsPosition, (sizeof(int) * (qtd + 1)));
@@ -50,6 +53,7 @@ int *cardsPositionCanIDiscard(Hand myHand, Game *game)
 int makeAChoice(Hand myHand, Game *game)
 {
   int *cardsPosition = cardsPositionCanIDiscard(myHand, game);
+  // printCardsCanIDiscard(myHand, cardsPosition);
   int cardPosition = hasTheCard(myHand, game->table);
   if (cardPosition >= 0)
     return cardPosition;

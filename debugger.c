@@ -22,3 +22,16 @@ void printTable(Card table)
   char *tableCard = strcat(table.value, table.naipe);
   debug(tableCard);
 }
+
+void printCardsCanIDiscard(Hand myHand, int *positions)
+{
+  int last = positions[positions[0]];
+  int j;
+  fprintf(stderr, "[");
+  for (int i = 1; i < positions[0]; i++)
+  {
+    j = positions[i];
+    fprintf(stderr, " %s%s,", myHand.cards[j].value, myHand.cards[j].naipe);
+  }
+  fprintf(stderr, " %s%s ]\n", myHand.cards[last].value, myHand.cards[last].naipe);
+}

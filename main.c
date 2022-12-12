@@ -14,8 +14,8 @@
 int main()
 {
 
-  char temp[MAX_LINE];     // string para leitura temporária de dados
-  char my_id[MAX_ID_SIZE]; // identificador do seu bot
+  char temp[MAX_LINE]; // string para leitura temporária de dados
+
   Hand myHand;
   Game *game = malloc(sizeof(Game));
   game->gameAction = malloc(sizeof(GameAction));
@@ -31,7 +31,7 @@ int main()
   scanf("PLAYERS %[^\n]\n", temp);
   readPlayers(temp, game);
 
-  scanf("YOU %s\n", my_id);
+  scanf("YOU %s\n", game->myId);
 
   scanf("HAND %[^\n]\n", temp);
   myHand = readHand(temp);
@@ -47,7 +47,7 @@ int main()
     {
       readAction(game);
       updateGame(game);
-    } while (strcmp(game->gameAction->action, "TURN") || strcmp(game->gameAction->complement, my_id));
+    } while (strcmp(game->gameAction->action, "TURN") || strcmp(game->gameAction->complement, game->myId));
 
     int specialCard = convertCardToInt(game->table);
     if (game->shouldBuySomeCard)
@@ -82,6 +82,7 @@ int main()
   }
 
   free(myHand.cards);
+  free(game->gameAction);
   free(game);
 
   return 0;

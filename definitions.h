@@ -42,6 +42,12 @@ typedef struct
 
 typedef struct
 {
+  char botId[MAX_ID_SIZE];
+  int cardsQuantity;
+} Player;
+
+typedef struct
+{
   char action[10];
   char complement[10];
   char secondComplement[10];
@@ -49,8 +55,9 @@ typedef struct
 
 typedef struct
 {
-  char players[6][MAX_ID_SIZE];
-  int players_count;
+  char myId[MAX_ID_SIZE];
+  Player players[6];
+  int playersCount;
   Card table;
   int shouldBuySomeCard;
   GameAction *gameAction;

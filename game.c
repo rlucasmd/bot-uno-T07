@@ -43,11 +43,12 @@ void readPlayers(char *entrada, Game *game)
   char *part = strtok(entrada, " ");
   while (part)
   {
-    strcpy(game->players[index], part);
+    game->players[index].cardsQuantity = 7;
+    strcpy(game->players[index].botId, part);
     index++;
     part = strtok(NULL, " ");
   }
-  game->players_count = index;
+  game->playersCount = index;
 }
 
 int hasSecondComplement(Card table)
@@ -84,9 +85,22 @@ int convertActionToInt(GameAction gameAction)
   return TURN;
 }
 
+void updateOtherBotActions(Game *game)
+{
+  int isMyBot = strcmp(game->gameAction->complement, game->myId);
+  if (isMyBot != 0)
+  {
+  }
+}
+
 void updateGame(Game *game)
 {
   int action = convertActionToInt(*((*game).gameAction));
+
+  if (action == TURN)
+  {
+    updateOtherBotActions(game);
+  }
 
   if (action == DISCARD)
   {

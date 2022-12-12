@@ -1,4 +1,4 @@
-BOT_NAME=bot_C
+BOT_NAME=bot_D
 PARAMS= -g -W -pedantic
 
 all: main.c debugger hand cards strategy game 
@@ -16,4 +16,4 @@ debugger: debugger.c
 clean: 
 	rm -rf *.o
 run: 
-	./uno bot_A bot_C
+	./uno bot_A bot_B bot_C bot_D
