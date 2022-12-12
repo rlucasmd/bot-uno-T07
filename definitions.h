@@ -3,7 +3,7 @@
 #define MAX_LINE 100
 #define MAX_ACTION 10
 #define MAX_ID_SIZE 10
-// char suits[4][4] = {{226, 153, 165, 0}, {226, 153, 166, 0}, {226, 153, 163, 0}, {226, 153, 160, 0}};
+
 enum GameCards
 {
   ACE = 1,
@@ -21,6 +21,13 @@ enum Suits
   SPADE = 3,
 };
 
+enum Actions
+{
+  DISCARD = 0,
+  BUY = 1,
+  TURN = 2,
+};
+
 typedef struct
 {
   char value[3];
@@ -35,9 +42,24 @@ typedef struct
 
 typedef struct
 {
-  char players[6][MAX_ID_SIZE];
-  int players_count;
+  char botId[MAX_ID_SIZE];
+  int cardsQuantity;
+} Player;
+
+typedef struct
+{
+  char action[10];
+  char complement[10];
+  char secondComplement[10];
+} GameAction;
+
+typedef struct
+{
+  char myId[MAX_ID_SIZE];
+  Player players[6];
+  int playersCount;
   Card table;
   int shouldBuySomeCard;
+  GameAction *gameAction;
 } Game;
 #endif

@@ -43,11 +43,12 @@ void readPlayers(char *entrada, Game *game)
   char *part = strtok(entrada, " ");
   while (part)
   {
-    strcpy(game->players[index], part);
+    game->players[index].cardsQuantity = 7;
+    strcpy(game->players[index].botId, part);
     index++;
     part = strtok(NULL, " ");
   }
-  game->players_count = index;
+  game->playersCount = index;
 }
 
 int hasSecondComplement(Card table)
@@ -59,14 +60,63 @@ int hasSecondComplement(Card table)
   return 0;
 }
 
-void readAction(char *action, char *complement, char *secondComplement, Game *game)
+void readAction(Game *game)
 {
-  if (strcmp(action, "DISCARD") == 0)
+  scanf("%s %s", game->gameAction->action, game->gameAction->complement);
+  if (strcmp(game->gameAction->action, "DISCARD") == 0)
   {
-    game->table = makeCard(complement);
+    game->table = makeCard(game->gameAction->complement);
     if (hasSecondComplement(game->table))
     {
-      scanf("%s\n", secondComplement);
+      scanf("%s\n", game->gameAction->secondComplement);
     }
+  }
+}
+
+int convertActionToInt(GameAction gameAction)
+{
+  if (strcmp(gameAction.action, "DISCARD") == 0)
+    return DISCARD;
+  if (strcmp(gameAction.action, "BUY") == 0)
+    return BUY;
+  if (strcmp(gameAction.action, "TURN") == 0)
+    return TURN;
+
+  return TURN;
+}
+
+void updateOtherBotActions(Game *game)
+{
+  int isMyBot = strcmp(game->gameAction->complement, game->myId);
+  if (isMyBot != 0)
+  {
+  }
+}
+
+void updateGame(Game *game)
+{
+  int action = convertActionToInt(*((*game).gameAction));
+
+  if (action == TURN)
+  {
+    updateOtherBotActions(game);
+  }
+
+  if (action == DISCARD)
+  {
+    int isDrawCard = convertCardToInt(makeCard(game->gameAction->complement));
+    if (isDrawCard == JACK || isDrawCard == JOKER)
+    {
+      game->shouldBuySomeCard = 1;
+    }
+    if (isDrawCard == ACE || isDrawCard == JOKER)
+    {
+      strcpy(game->table.naipe, game->gameAction->secondComplement);
+    }
+  }
+
+  if (action == BUY)
+  {
+    game->shouldBuySomeCard = 0;
   }
 }
