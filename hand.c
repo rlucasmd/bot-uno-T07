@@ -40,25 +40,46 @@ Hand discard(Hand myHand, int position)
 
   return myHand;
 }
+
+//Verifica se pode descartar uma carta que não seja ACE ou JOKER
 int canDiscardThisCard(Card table, Card handCard)
 {
-  int result = (strcmp(table.naipe, handCard.naipe) == 0) ||
-               (strcmp(table.value, handCard.value) == 0);
+  int result = (strcmp(handCard.value, "A") != 0) &&
+               (strcmp(handCard.value, "C") != 0) &&
+               ((strcmp(table.naipe, handCard.naipe) == 0) ||
+               (strcmp(table.value, handCard.value) == 0));
 
   return result;
 }
 
-int hasTheCard(Hand myHand, Card table)
+//Verifica se a carta é ACE ou JOKER(e assim pode descarta-la)
+int canDiscardThisCardAC(Card table, Card handCard)
 {
-  for (int i = 0; i < myHand.tam; i++)
-  {
-    if (canDiscardThisCard(table, myHand.cards[i]))
-    {
-      return i;
-    }
-  }
-  return -1;
+  int result = ((strcmp(handCard.value, "A") == 0) ||
+               (strcmp(handCard.value, "C") == 0));
+
+  return result;
 }
+
+// int canDiscardThisCard(Card table, Card handCard)
+// {
+//   int result = (strcmp(table.naipe, handCard.naipe) == 0) ||
+//                (strcmp(table.value, handCard.value) == 0);
+
+//   return result;
+// }
+
+// int hasTheCard(Hand myHand, Card table)
+// {
+//   for (int i = 0; i < myHand.tam; i++)
+//   {
+//     if (canDiscardThisCard(table, myHand.cards[i]))
+//     {
+//       return i;
+//     }
+//   }
+//   return -1;
+// }
 
 Hand cardToDiscard(int position, Hand myHand, Game *game)
 {
