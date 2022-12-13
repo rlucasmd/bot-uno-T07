@@ -38,6 +38,7 @@ int main()
 
   scanf("TABLE %s", temp);
   game->table = readTable(temp);
+  game->flux = 1;
 
   // === PARTIDA ===
 

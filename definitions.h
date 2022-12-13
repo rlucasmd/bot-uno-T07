@@ -58,6 +58,9 @@ typedef struct
   char myId[MAX_ID_SIZE];
   Player players[6];
   int playersCount;
+  int botTurnIndex;
+  int flux;
+  Player nextBot;
   Card table;
   int shouldBuySomeCard;
   GameAction *gameAction;

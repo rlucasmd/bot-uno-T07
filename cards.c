@@ -55,5 +55,8 @@ int convertCardToInt(Card card)
   int isA = strcmp(card.value, "A");
   if (isA == 0)
     return ACE;
+  int isD = strcmp(card.value, "D");
+  if (isD == 0)
+    return QUEEN;
   return 0;
 }

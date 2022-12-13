@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "definitions.h"
+#include "debugger.h"
 #include "cards.h"
 
 Hand readHand(char *inputString)
@@ -49,6 +50,7 @@ void readPlayers(char *entrada, Game *game)
     part = strtok(NULL, " ");
   }
   game->playersCount = index;
+  game->botTurnIndex = -1;
 }
 
 int hasSecondComplement(Card table)
@@ -90,6 +92,17 @@ void updateOtherBotActions(Game *game)
   int isMyBot = strcmp(game->gameAction->complement, game->myId);
   if (isMyBot != 0)
   {
+    for (int i = 0; i < game->playersCount; i++)
+    {
+      if (strcmp(game->players[i].botId, game->gameAction->complement) == 0)
+      {
+        game->botTurnIndex = i;
+      }
+    }
+  }
+  else
+  {
+    game->botTurnIndex = -1;
   }
 }
 
@@ -113,10 +126,28 @@ void updateGame(Game *game)
     {
       strcpy(game->table.naipe, game->gameAction->secondComplement);
     }
+    if (isDrawCard == QUEEN)
+      game->flux *= -1;
   }
 
   if (action == BUY)
   {
+    if (game->botTurnIndex >= 0)
+    {
+      // debug(game->players[game->botTurnIndex].botId);
+    }
     game->shouldBuySomeCard = 0;
+  }
+
+  if (game->botTurnIndex >= 0)
+  {
+    int nextIndex = game->botTurnIndex + game->flux;
+    if (nextIndex >= game->playersCount)
+      nextIndex = 0;
+    if (nextIndex < 0)
+      nextIndex = game->playersCount - 1;
+
+    game->nextBot = game->players[nextIndex];
+    debug(game->nextBot.botId);
   }
 }
