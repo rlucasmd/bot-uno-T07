@@ -71,6 +71,10 @@ Hand cardToDiscard(int position, Hand myHand, Game *game)
   {
     char *naipe = choseNaipe(mostNaipeOnHand);
     strcpy(game->table.naipe, naipe);
+    if (cardInt == QUEEN)
+    {
+      game->flux *= -1;
+    }
 
     printf("DISCARD %s%s %s\n", discardedCard.value, discardedCard.naipe, naipe);
     myHand = discard(myHand, position);

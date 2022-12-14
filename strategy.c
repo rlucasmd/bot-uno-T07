@@ -53,7 +53,10 @@ int *cardsPositionCanIDiscard(Hand myHand, Game *game)
 int makeAChoice(Hand myHand, Game *game)
 {
   int *cardsPosition = cardsPositionCanIDiscard(myHand, game);
+  // debug("Cards to discard:");
   // printCardsCanIDiscard(myHand, cardsPosition);
+  // debug("Next bot:");
+  // debug(game->nextBot.botId);
   int cardPosition = hasTheCard(myHand, game->table);
   if (cardPosition >= 0)
     return cardPosition;

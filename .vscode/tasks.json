@@ -7,8 +7,15 @@
       "args": [
         "-fdiagnostics-color=always",
         "-g",
-        "${workspaceFolder}/*.c",
-        "${workspaceFolder}/*.h",
+        // "${fileDirname}/**.c",
+        // "${fileDirname}/**.h",
+        // "${file}",
+        "main.c",
+        "cards.c",
+        "debugger.c",
+        "game.c",
+        "hand.c",
+        "strategy.c",
         "-o",
         "${fileDirname}/${fileBasenameNoExtension}"
       ],
@@ -18,10 +25,7 @@
       "problemMatcher": [
         "$gcc"
       ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "group": "build",
       "detail": "Tarefa gerada pelo Depurador."
     }
   ],

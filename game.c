@@ -89,21 +89,21 @@ int convertActionToInt(GameAction gameAction)
 
 void updateOtherBotActions(Game *game)
 {
-  int isMyBot = strcmp(game->gameAction->complement, game->myId);
-  if (isMyBot != 0)
+  // int isMyBot = strcmp(game->gameAction->complement, game->myId);
+  // if (isMyBot != 0)
+  // {
+  for (int i = 0; i < game->playersCount; i++)
   {
-    for (int i = 0; i < game->playersCount; i++)
+    if (strcmp(game->players[i].botId, game->gameAction->complement) == 0)
     {
-      if (strcmp(game->players[i].botId, game->gameAction->complement) == 0)
-      {
-        game->botTurnIndex = i;
-      }
+      game->botTurnIndex = i;
     }
   }
-  else
-  {
-    game->botTurnIndex = -1;
-  }
+  // }
+  // else
+  // {
+  //   game->botTurnIndex = -1;
+  // }
 }
 
 void updateGame(Game *game)
@@ -148,6 +148,6 @@ void updateGame(Game *game)
       nextIndex = game->playersCount - 1;
 
     game->nextBot = game->players[nextIndex];
-    debug(game->nextBot.botId);
+    // debug(game->nextBot.botId);
   }
 }
