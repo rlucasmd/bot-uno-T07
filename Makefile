@@ -16,4 +16,4 @@ debugger: debugger.c
 clean: 
 	rm -rf *.o
 run: 
-	./uno bot_A bot_B bot_C bot_D
+	./uno bot_D bot_A

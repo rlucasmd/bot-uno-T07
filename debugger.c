@@ -8,6 +8,8 @@ void debug(char *message) { fprintf(stderr, "%s\n", message); }
 
 void printHand(Hand myHand)
 {
+  if (myHand.tam <= 0)
+    return;
   int last = myHand.tam - 1;
   fprintf(stderr, "[");
   for (int i = 0; i < last; i++)

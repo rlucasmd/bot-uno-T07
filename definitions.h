@@ -44,6 +44,7 @@ typedef struct
 {
   char botId[MAX_ID_SIZE];
   int cardsQuantity;
+  Hand buyedHand;
 } Player;
 
 typedef struct

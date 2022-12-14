@@ -46,6 +46,7 @@ void readPlayers(char *entrada, Game *game)
   {
     game->players[index].cardsQuantity = 7;
     strcpy(game->players[index].botId, part);
+    game->players[index].buyedHand.tam = 0;
     index++;
     part = strtok(NULL, " ");
   }
@@ -106,6 +107,23 @@ void updateOtherBotActions(Game *game)
   // }
 }
 
+void updateBuyedCard(Game *game)
+{
+  int botIndex = game->botTurnIndex;
+  int qtdCards = game->players[botIndex].buyedHand.tam + 1;
+  if (game->players[botIndex].buyedHand.tam == 0)
+  {
+    game->players[botIndex].buyedHand.cards = malloc(sizeof(Card) * qtdCards);
+  }
+  else
+  {
+    game->players[botIndex].buyedHand.cards = realloc(game->players[botIndex].buyedHand.cards, sizeof(Card) * qtdCards);
+  }
+  game->players[botIndex].buyedHand.cards[qtdCards - 1] = game->table;
+
+  game->players[botIndex].buyedHand.tam += 1;
+}
+
 void updateGame(Game *game)
 {
   int action = convertActionToInt(*((*game).gameAction));
@@ -132,6 +150,8 @@ void updateGame(Game *game)
 
   if (action == BUY)
   {
+    if (strcmp(game->gameAction->complement, "1") == 0)
+      updateBuyedCard(game);
     if (game->botTurnIndex >= 0)
     {
       // debug(game->players[game->botTurnIndex].botId);
@@ -141,6 +161,7 @@ void updateGame(Game *game)
 
   if (game->botTurnIndex >= 0)
   {
+    // int atualBotIndex = game->botTurnIndex;
     int nextIndex = game->botTurnIndex + game->flux;
     if (nextIndex >= game->playersCount)
       nextIndex = 0;
@@ -148,6 +169,5 @@ void updateGame(Game *game)
       nextIndex = game->playersCount - 1;
 
     game->nextBot = game->players[nextIndex];
-    // debug(game->nextBot.botId);
   }
 }
