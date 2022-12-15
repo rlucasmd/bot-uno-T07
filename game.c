@@ -90,9 +90,6 @@ int convertActionToInt(GameAction gameAction)
 
 void updateOtherBotActions(Game *game)
 {
-  // int isMyBot = strcmp(game->gameAction->complement, game->myId);
-  // if (isMyBot != 0)
-  // {
   for (int i = 0; i < game->playersCount; i++)
   {
     if (strcmp(game->players[i].botId, game->gameAction->complement) == 0)
@@ -100,11 +97,6 @@ void updateOtherBotActions(Game *game)
       game->botTurnIndex = i;
     }
   }
-  // }
-  // else
-  // {
-  //   game->botTurnIndex = -1;
-  // }
 }
 
 void updateBuyedCard(Game *game)

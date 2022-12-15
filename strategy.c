@@ -10,16 +10,19 @@
 int countNaipesOnHand(Hand myHand)
 {
   int naipes[4] = {0};
-  int num;
+  int num, value;
   for (int i = 0; i < myHand.tam; i++)
   {
     num = naipeToInt(myHand.cards[i].naipe);
-    naipes[num] += 1;
+    value = convertCardToInt(myHand.cards[i]);
+    if(value != ACE)
+      naipes[num] += 1;
   }
+  
   int bigger = -1, pos = -1;
   for (int i = 0; i < 4; i++)
   {
-    if (bigger < naipes[i])
+    if (naipes[i] >= bigger)
     {
       bigger = naipes[i];
       pos = i;
@@ -64,7 +67,7 @@ int checkIfBotDontHaveThisNaipe(Hand botHand, Card card)
 int isSpecial(Card card)
 {
   int cardInt = convertCardToInt(card);
-  if (cardInt == JOKER || cardInt == ACE || cardInt == JACK)
+  if (cardInt == JOKER || cardInt == ACE || cardInt == JACK || cardInt == QUEEN)
     return 1;
   return 0;
 }
@@ -86,11 +89,11 @@ int makeABetterChoice(Hand myHand, Game *game, int *cardPositions)
     }
   }
 
-    // verifica se há alguma carta rainha, se tiver e o bot anterior não tiver o naipe da rainha então jogamos ela para garantir que os outros bots comprem mais cartas
+  // verifica se há alguma carta rainha, se tiver e o bot anterior não tiver o naipe da rainha então jogamos ela para garantir que os outros bots comprem mais cartas
   for (int i = 1; i <= cardPositions[0]; i++)
   {
     cardInt = convertCardToInt(myHand.cards[cardPositions[i]]);
-    if (cardInt == QUEEN)
+    if (cardInt == QUEEN && game->previousBot.cardsQuantity <= game->nextBot.cardsQuantity)
     {
       int queenCardPosition = cardPositions[i];
 
@@ -98,6 +101,23 @@ int makeABetterChoice(Hand myHand, Game *game, int *cardPositions)
       {
         return queenCardPosition;
       }
+    }
+  }
+  //verifica se há algum rei que possa ser jogado
+  for (int i = 1; i <= cardPositions[0]; i++)
+  {
+    cardInt = convertCardToInt(myHand.cards[cardPositions[i]]);
+    if(cardInt == KING){
+      return cardPositions[i];
+    }
+  }
+  //verifica se há alguma carta simples (carta sem ação) a ser jogada.
+  for (int i = 1; i <= cardPositions[0]; i++)
+  {
+    isSpecialCard = isSpecial(myHand.cards[cardPositions[i]]);
+    if (!isSpecialCard)
+    {
+      return cardPositions[i];
     }
   }
 
@@ -108,15 +128,6 @@ int makeABetterChoice(Hand myHand, Game *game, int *cardPositions)
       return cardPositions[i];
   }
 
-  for (int i = 1; i <= cardPositions[0]; i++)
-  {
-    isSpecialCard = isSpecial(myHand.cards[cardPositions[i]]);
-    if (!isSpecialCard)
-    {
-      return cardPositions[i];
-    }
-  }
-
   return -1;
 }
 
@@ -125,13 +136,13 @@ int makeAChoice(Hand myHand, Game *game)
   // Hand optionsToDiscard;
   int cardPosition = -1;
   int *cardsPosition = cardsPositionCanIDiscard(myHand, game);
-  debug("Cards to discard:");
-  printCardsCanIDiscard(myHand, cardsPosition);
-  printTable(game->table);
-  debug("Next bot:");
-  printBot(game->nextBot);
-  debug("Previous bot:");
-  printBot(game->previousBot);
+  // debug("Cards to discard:");
+  // printCardsCanIDiscard(myHand, cardsPosition);
+  // printTable(game->table);
+  // debug("Next bot:");
+  // printBot(game->nextBot);
+  // debug("Previous bot:");
+  // printBot(game->previousBot);
 
   if (cardsPosition[0] == 1)
   {
