@@ -1,10 +1,5 @@
 PLAYERS b1 b2
 YOU b1
-HAND [ A♥ A♦ A♣ 10♠ 2♦ A♦ 10♣ ]
-TABLE A♥
-TURN b2
-BUY 1
-DISCARD 2♦
-TURN b2
-BUY 1
+HAND [ D♠ A♦ A♣ 10♠ 2♦ A♦ 10♣ ]
+TABLE V♥
 TURN b1

@@ -61,7 +61,7 @@ typedef struct
   int playersCount;
   int botTurnIndex;
   int flux;
-  Player nextBot;
+  Player nextBot, previousBot;
   Card table;
   int shouldBuySomeCard;
   GameAction *gameAction;

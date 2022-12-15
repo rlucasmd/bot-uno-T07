@@ -87,3 +87,10 @@ Hand cardToDiscard(int position, Hand myHand, Game *game)
 
   return myHand;
 }
+
+int isTheSameCard(Card firstCard, Card secondCard)
+{
+  if (strcmp(firstCard.value, secondCard.value) == 0 && strcmp(firstCard.naipe, secondCard.naipe) == 0)
+    return 1;
+  return 0;
+}

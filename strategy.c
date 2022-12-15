@@ -50,15 +50,102 @@ int *cardsPositionCanIDiscard(Hand myHand, Game *game)
   return cardsPosition;
 }
 
+int checkIfBotDontHaveThisNaipe(Hand botHand, Card card)
+{
+  for (int i = 0; i < botHand.tam; i++)
+  {
+    if (strcmp(botHand.cards[i].naipe, card.naipe) == 0)
+      return i;
+  }
+
+  return -1;
+}
+
+int isSpecial(Card card)
+{
+  int cardInt = convertCardToInt(card);
+  if (cardInt == JOKER || cardInt == ACE || cardInt == JACK)
+    return 1;
+  return 0;
+}
+
+int makeABetterChoice(Hand myHand, Game *game, int *cardPositions)
+{
+  int cardInt = 0;
+  int isSpecialCard = 0;
+  // se o próximo bot tiver menos carta que o nosso, tenta descartar um valete ou coringa
+  if (game->nextBot.cardsQuantity < myHand.tam && game->nextBot.cardsQuantity < 4)
+  {
+    for (int i = 1; i <= cardPositions[0]; i++)
+    {
+      cardInt = convertCardToInt(myHand.cards[cardPositions[i]]);
+      if (cardInt == JOKER || cardInt == JACK)
+      {
+        return cardPositions[i];
+      }
+    }
+  }
+
+    // verifica se há alguma carta rainha, se tiver e o bot anterior não tiver o naipe da rainha então jogamos ela para garantir que os outros bots comprem mais cartas
+  for (int i = 1; i <= cardPositions[0]; i++)
+  {
+    cardInt = convertCardToInt(myHand.cards[cardPositions[i]]);
+    if (cardInt == QUEEN)
+    {
+      int queenCardPosition = cardPositions[i];
+
+      if (checkIfBotDontHaveThisNaipe(game->previousBot.buyedHand, myHand.cards[queenCardPosition]) >= 0)
+      {
+        return queenCardPosition;
+      }
+    }
+  }
+
+  // verifica se há alguma carta com o naipe ou o valor das possíveis cartas que o próximo bot não tenha
+  for (int i = 1; i <= cardPositions[0]; i++)
+  {
+    if (hasTheCard(game->nextBot.buyedHand, myHand.cards[cardPositions[i]]) >= 0)
+      return cardPositions[i];
+  }
+
+  for (int i = 1; i <= cardPositions[0]; i++)
+  {
+    isSpecialCard = isSpecial(myHand.cards[cardPositions[i]]);
+    if (!isSpecialCard)
+    {
+      return cardPositions[i];
+    }
+  }
+
+  return -1;
+}
+
 int makeAChoice(Hand myHand, Game *game)
 {
+  // Hand optionsToDiscard;
+  int cardPosition = -1;
   int *cardsPosition = cardsPositionCanIDiscard(myHand, game);
   debug("Cards to discard:");
   printCardsCanIDiscard(myHand, cardsPosition);
+  printTable(game->table);
   debug("Next bot:");
-  debug(game->nextBot.botId);
-  printHand(game->nextBot.buyedHand);
-  int cardPosition = hasTheCard(myHand, game->table);
+  printBot(game->nextBot);
+  debug("Previous bot:");
+  printBot(game->previousBot);
+
+  if (cardsPosition[0] == 1)
+  {
+    return cardsPosition[1];
+  }
+
+  cardPosition = makeABetterChoice(myHand, game, cardsPosition);
+
+  if (cardPosition >= 0)
+  {
+    return cardPosition;
+  }
+
+  cardPosition = hasTheCard(myHand, game->table);
   if (cardPosition >= 0)
     return cardPosition;
 

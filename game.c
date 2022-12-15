@@ -135,6 +135,7 @@ void updateGame(Game *game)
 
   if (action == DISCARD)
   {
+    game->players[game->botTurnIndex].cardsQuantity -= 1;
     int isDrawCard = convertCardToInt(makeCard(game->gameAction->complement));
     if (isDrawCard == JACK || isDrawCard == JOKER)
     {
@@ -150,6 +151,8 @@ void updateGame(Game *game)
 
   if (action == BUY)
   {
+    int quantityCardBuyed = atoi(game->gameAction->complement);
+    game->players[game->botTurnIndex].cardsQuantity += quantityCardBuyed;
     if (strcmp(game->gameAction->complement, "1") == 0)
       updateBuyedCard(game);
     if (game->botTurnIndex >= 0)
@@ -163,11 +166,17 @@ void updateGame(Game *game)
   {
     // int atualBotIndex = game->botTurnIndex;
     int nextIndex = game->botTurnIndex + game->flux;
+    int previousIndex = game->botTurnIndex - game->flux;
     if (nextIndex >= game->playersCount)
       nextIndex = 0;
     if (nextIndex < 0)
       nextIndex = game->playersCount - 1;
+    if (previousIndex < 0)
+      previousIndex = game->playersCount - 1;
+    if (previousIndex >= game->playersCount)
+      previousIndex = 0;
 
     game->nextBot = game->players[nextIndex];
+    game->previousBot = game->players[previousIndex];
   }
 }

@@ -22,11 +22,13 @@ void printHand(Hand myHand)
 void printTable(Card table)
 {
   char *tableCard = strcat(table.value, table.naipe);
-  debug(tableCard);
+  fprintf(stderr, "Table: %s\n", tableCard);
 }
 
 void printCardsCanIDiscard(Hand myHand, int *positions)
 {
+  if (positions[0] == 0)
+    return;
   int last = positions[positions[0]];
   int j;
   fprintf(stderr, "[");
@@ -36,4 +38,11 @@ void printCardsCanIDiscard(Hand myHand, int *positions)
     fprintf(stderr, " %s%s,", myHand.cards[j].value, myHand.cards[j].naipe);
   }
   fprintf(stderr, " %s%s ]\n", myHand.cards[last].value, myHand.cards[last].naipe);
+}
+
+void printBot(Player bot)
+{
+  debug(bot.botId);
+  fprintf(stderr, " %d \n", bot.cardsQuantity);
+  printHand(bot.buyedHand);
 }
