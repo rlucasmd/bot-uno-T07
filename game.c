@@ -5,7 +5,7 @@
 #include "definitions.h"
 #include "debugger.h"
 #include "cards.h"
-
+// lê as cartas iniciais do jogo distribuídas pelo gerenciador
 Hand readHand(char *inputString)
 {
   Hand myHand;
@@ -30,13 +30,13 @@ Hand readHand(char *inputString)
   }
   return myHand;
 }
-
+// lê a carta inicial da mesa
 Card readTable(char *entrada)
 {
   Card aux = makeCard(entrada);
   return aux;
 }
-
+// lê os jogadores participantes da partida e guarda em variáveis struct cada jogador
 void readPlayers(char *entrada, Game *game)
 {
   int index = 0;
@@ -53,16 +53,17 @@ void readPlayers(char *entrada, Game *game)
   game->playersCount = index;
   game->botTurnIndex = -1;
 }
-
+// verifica se a carta descartada na mesa é do tipo que precisa de um segundo complemento (carta de alção Às ou Coringa)
 int hasSecondComplement(Card table)
 {
-  int a = strcmp(table.value, "A");
-  int c = strcmp(table.value, "C");
-  if (a == 0 || c == 0)
+  int card = convertCardToInt(table);
+  if (card == ACE || card == JOKER)
     return 1;
   return 0;
 }
-
+// lê a ação do jogo e atualiza o gerenciador game(struct que contem a lógica de
+// quem está jogando, quem é o próximo a jogar e quem foi o último a jogar,
+// também guardar informações da carta sobre a mesa, sentido de rotação)
 void readAction(Game *game)
 {
   scanf("%s %s", game->gameAction->action, game->gameAction->complement);
@@ -75,7 +76,7 @@ void readAction(Game *game)
     }
   }
 }
-
+// transforma a ação lida pelo bot e converte pra um ENUM do tipo action;
 int convertActionToInt(GameAction gameAction)
 {
   if (strcmp(gameAction.action, "DISCARD") == 0)
@@ -87,7 +88,7 @@ int convertActionToInt(GameAction gameAction)
 
   return TURN;
 }
-
+// atualiza o indice do bot que irá jogar
 void updateOtherBotActions(Game *game)
 {
   for (int i = 0; i < game->playersCount; i++)
@@ -98,7 +99,8 @@ void updateOtherBotActions(Game *game)
     }
   }
 }
-
+// caso o jogador atual realize uma compra de 1 carta, atualiza o vetor de cartas
+// que possivelmente o bot não teria, baseado na carta sobre a mesa.
 void updateBuyedCard(Game *game)
 {
   int botIndex = game->botTurnIndex;
@@ -115,6 +117,16 @@ void updateBuyedCard(Game *game)
 
   game->players[botIndex].buyedHand.tam += 1;
 }
+// atualiza algumas informações da partida, baseado na action enviada pelo gerenciador:
+//    TURN - atualiza o indice de qual bot está jogando atualmente.
+//    DISCARD - identifica qual bot descartou a carta e atualiza a quantidade de cartas
+//    que o bot possui na mão.
+//    se for uma carta de compra (Valete ou Coringa) armazena uma flag pra o sabermos
+//    se nosso bot deve comprar cartas, caso seja detectado que outro bot realizou a
+//    compra, seguimos jogando normalmente.
+//    BUY - atualiza a quantidade de cartas na mão do bot que realizou a compra,
+//    também é realizado a liberação da flag shouldBuySomeCard do nosso bot, pois outro
+//    bot já realizou a compra e a carta descartada já cumpriu sua função.
 
 void updateGame(Game *game)
 {
@@ -147,16 +159,12 @@ void updateGame(Game *game)
     game->players[game->botTurnIndex].cardsQuantity += quantityCardBuyed;
     if (strcmp(game->gameAction->complement, "1") == 0)
       updateBuyedCard(game);
-    if (game->botTurnIndex >= 0)
-    {
-      // debug(game->players[game->botTurnIndex].botId);
-    }
+
     game->shouldBuySomeCard = 0;
   }
-
+  // atualiza o index do jogador e as variáveis do próximo bot e do bot anterior
   if (game->botTurnIndex >= 0)
   {
-    // int atualBotIndex = game->botTurnIndex;
     int nextIndex = game->botTurnIndex + game->flux;
     int previousIndex = game->botTurnIndex - game->flux;
     if (nextIndex >= game->playersCount)

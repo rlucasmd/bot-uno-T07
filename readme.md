@@ -1,8 +1,15 @@
-# BOT-UNO
-Este é um projeto de um bot implementado para jogar essa [versão](https://github.com/amccampos/uno/blob/main/readme.md) do uno. 
+# 🤖 BOT-UNO
+Este é um projeto de um bot implementado em linguagem C, capaz de jogar essa [versão](https://github.com/amccampos/uno/blob/main/readme.md) do uno.
 
+# 💡 Ideia
+Inicialmente, a ideia seria criar um bot executável para jogar uma partida inteira de UNO e ser capaz de tomar certas decisões com o objetivo de maximizar as chances de vitória 🏆️, utilizando o máximo de conhecimento adquirido durante a disciplina.
 
-## Executando o bot
+# 🚀 Equipe
+Dupla responsável pelo desenvolvimento do bot:
+- Antonio Matheus
+- Ranieri Lucas
+
+## ▶️ Executando o bot
 O gerenciador do jogo se encontra no formato binário do Linux, portanto você precisará executá-lo sobre esse sistema operacional ou em algum subsistema para Linux. Outra opção viável é executar o jogo via replit.
 
 Após clonar o repositório, `compile` os arquivos, para isso basta digitar o comando:
