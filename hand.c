@@ -1,3 +1,4 @@
+//funções que "operam" no nível da estrutura da hand
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,13 +7,14 @@
 #include "cards.h"
 #include "strategy.h"
 
+// Realoca o vetor das cartas de uma mão 
 Hand reallocateNCards(Hand myHand, int n)
 {
   int tam = myHand.tam + n;
   myHand.cards = realloc(myHand.cards, (sizeof(Card)) * (tam));
   return myHand;
 }
-
+// Lê e adiciona n cartas à mão
 Hand buyNCards(Hand myHand, int n)
 {
   char read[5];
@@ -27,6 +29,7 @@ Hand buyNCards(Hand myHand, int n)
   return myHand;
 }
 
+//retira a carta descartada da mão do bot
 Hand discard(Hand myHand, int position)
 {
   int tam = myHand.tam;
@@ -40,6 +43,7 @@ Hand discard(Hand myHand, int position)
 
   return myHand;
 }
+// Verifica se pode descartar uma carta da mão
 int canDiscardThisCard(Card table, Card handCard)
 {
   int result = (strcmp(table.naipe, handCard.naipe) == 0) ||
@@ -47,7 +51,7 @@ int canDiscardThisCard(Card table, Card handCard)
 
   return result;
 }
-
+// Verifica se tem uma carta que possa ser jogada com base na carta do table
 int hasTheCard(Hand myHand, Card table)
 {
   for (int i = 0; i < myHand.tam; i++)
@@ -59,15 +63,15 @@ int hasTheCard(Hand myHand, Card table)
   }
   return -1;
 }
-
+// Realiza a ação de descartar uma carta previamente selecionada
 Hand cardToDiscard(int position, Hand myHand, Game *game)
 {
   int cardInt = convertCardToInt(myHand.cards[position]);
   int needsComplement = (cardInt == JOKER) || (cardInt == ACE);
-  int mostNaipeOnHand = countNaipesOnHand(myHand);
+  int mostNaipeOnHand = countNaipesOnHand(myHand); //verifica o naipe que mais possui na mão para caso precise escolher um ao jogar um A ou C
   Card discardedCard = myHand.cards[position];
 
-  if (needsComplement)
+  if (needsComplement) //Caso o descarte seja A ou C
   {
     char *naipe = choseNaipe(mostNaipeOnHand);
     strcpy(game->table.naipe, naipe);
@@ -77,7 +81,7 @@ Hand cardToDiscard(int position, Hand myHand, Game *game)
     }
 
     printf("DISCARD %s%s %s\n", discardedCard.value, discardedCard.naipe, naipe);
-    myHand = discard(myHand, position);
+    myHand = discard(myHand, position); 
   }
   else
   {

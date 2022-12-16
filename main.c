@@ -1,3 +1,4 @@
+//Módulo principal, é quem inicializa as variáveis e chama as funções no momento adequado do jogo
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,7 +11,6 @@
 #include "debugger.h"
 
 /** Constantes para as strings a serem lidas */
-
 int main()
 {
 
@@ -45,11 +45,11 @@ int main()
   while (1)
   {
     do
-    {
+    { //Loop de observação, comportamento do bot enquanto não está jogando
       readAction(game);
       updateGame(game);
     } while (strcmp(game->gameAction->action, "TURN") || strcmp(game->gameAction->complement, game->myId));
-
+    //Loop de comportamento do bot no seu turno.
     int specialCard = convertCardToInt(game->table);
     if (game->shouldBuySomeCard)
     {

@@ -1,11 +1,13 @@
+//funções que "operam" no nível da estrutura das cartas 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "definitions.h"
-
+//vetor com as naipes do jogo
 char suits[4][4] = {{-30, -103, -91, 0}, {-30, -103, -90, 0}, {-30, -103, -93, 0}, {-30, -103, -96, 0}};
 
+//recebe o valor correspondete à enumeração dos naipes e retorna a string desse naipe 
 char *choseNaipe(int i)
 {
   return suits[i];
@@ -43,7 +45,7 @@ Card makeCard(char *cardString)
   }
   return myCard;
 }
-
+// Retorna um inteiro correspondente ao valor da carta (retorna 0 se não for uma carta especial) 
 int convertCardToInt(Card card)
 {
   int isV = strcmp(card.value, "V");

@@ -1,3 +1,4 @@
+//funções que definem as escolhas do bot no momento de fazer uma jogada
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +8,7 @@
 #include "hand.h"
 #include "debugger.h"
 
+//Retorna o naipe que o bot mais possui na mão
 int countNaipesOnHand(Hand myHand)
 {
   int naipes[4] = {0};
@@ -15,7 +17,7 @@ int countNaipesOnHand(Hand myHand)
   {
     num = naipeToInt(myHand.cards[i].naipe);
     value = convertCardToInt(myHand.cards[i]);
-    if(value != ACE)
+    if(value != ACE) //não conta o naipe do ACE, já que ele pode ser jogado sobre qualquer naipe
       naipes[num] += 1;
   }
   
@@ -31,6 +33,8 @@ int countNaipesOnHand(Hand myHand)
   return pos;
 }
 
+//Retorna um vetor com as posições das cartas da mão do bot possíveis de serem descartadas a cada rodada
+//a posição 0 desse vetor refere-se ao número de cartas que podem ser descartadas
 int *cardsPositionCanIDiscard(Hand myHand, Game *game)
 {
   int *cardsPosition = malloc(sizeof(int));
@@ -53,6 +57,7 @@ int *cardsPositionCanIDiscard(Hand myHand, Game *game)
   return cardsPosition;
 }
 
+//verifica se o bot não possui aquele naipe (ou seja, se comprou uma carta quando o table tinha esse naipe)
 int checkIfBotDontHaveThisNaipe(Hand botHand, Card card)
 {
   for (int i = 0; i < botHand.tam; i++)
@@ -144,7 +149,7 @@ int makeAChoice(Hand myHand, Game *game)
   // debug("Previous bot:");
   // printBot(game->previousBot);
 
-  if (cardsPosition[0] == 1)
+  if (cardsPosition[0] == 1) //caso de só ter uma carta possível de descartar
   {
     return cardsPosition[1];
   }
