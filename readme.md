@@ -16,6 +16,16 @@ Dupla responsável pelo desenvolvimento do bot:
 ## 💡 Ideia
 Inicialmente, a ideia seria criar um bot executável para jogar uma partida inteira de UNO e ser capaz de tomar certas decisões com o objetivo de maximizar as chances de vitória 🏆️, utilizando o máximo de conhecimento adquirido durante a disciplina.
 
+## 🧠 Estratégia 
+Nosso bot atualmente segue a seguinte estratégia:
+- A cada rodada nosso bot se encarrega de verificar as posições de quais cartas na nossa mão podem ser descartadas, a partir daí ele calcula qual a melhor jogada a ser realizada com base em alguns critérios.
+- primeiramente verificamos dois dados(qual o próximo bot a jogar e quantas cartas ele tem), se a quantidade de cartas do próximo bot for menor que nossa então verificamos se há algum valete ou coringa que possa ser descartado, preferencialmente optamos por descartar um valete, guardando o coringa para último caso.
+- logo após verificamos se há alguma rainha a ser jogada, se sim, verificamos se o bot anterior não tem o naipe da rainha (comparando o vetor de cartas que o bot anterior possivelmente não tem), se sim, jogamos ela para garantir que o jogador anterior compre uma carta.
+- Em seguida, Verifica se há algum rei e se o próximo jogador tem menos cartas que o nosso, se sim o rei é descartado. 
+- Por fim fazemos uma busca de alguma carta a qual o naipe ou o valor dela foi encontrada no array de possíveis cartas que o próximo bot não tenha, se em nenhum desses casos for encontrado uma carta, jogamos a primeira carta do array de possíveis cartas.
+
+
+
 ## 📂 Arquivos neste repositório
 
 - `readme.md`: este arquivo.
@@ -26,6 +36,7 @@ Inicialmente, a ideia seria criar um bot executável para jogar uma partida inte
 - `hand.c`: funções relacionadas à mão do bot.
 - `game.c`: funções que atualizam as informações do bot a partir dos acontecimentos do jogo.
 - `strategy.c`: funções que definem as escolhas de jogadas do bot.
+- `debbuger.c`: funções para debugarmos o código durante o desenvolvimento do bot.
 - `Makefile`: conjunto de comandos para automatizar o processo de compilação e execução.
 - `uno`: programa gerenciador do jogo Uno.
 

@@ -1,4 +1,4 @@
-//funções que definem as escolhas do bot no momento de fazer uma jogada
+// funções que definem as escolhas do bot no momento de fazer uma jogada
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +8,7 @@
 #include "hand.h"
 #include "debugger.h"
 
-//Retorna o naipe que o bot mais possui na mão
+// Retorna o naipe que o bot mais possui na mão
 int countNaipesOnHand(Hand myHand)
 {
   int naipes[4] = {0};
@@ -17,10 +17,10 @@ int countNaipesOnHand(Hand myHand)
   {
     num = naipeToInt(myHand.cards[i].naipe);
     value = convertCardToInt(myHand.cards[i]);
-    if(value != ACE) //não conta o naipe do ACE, já que ele pode ser jogado sobre qualquer naipe
+    if (value != ACE) // não conta o naipe do ACE, já que ele pode ser jogado sobre qualquer naipe
       naipes[num] += 1;
   }
-  
+
   int bigger = -1, pos = -1;
   for (int i = 0; i < 4; i++)
   {
@@ -33,8 +33,8 @@ int countNaipesOnHand(Hand myHand)
   return pos;
 }
 
-//Retorna um vetor com as posições das cartas da mão do bot possíveis de serem descartadas a cada rodada
-//a posição 0 desse vetor refere-se ao número de cartas que podem ser descartadas
+// Retorna um vetor com as posições das cartas da mão do bot possíveis de serem descartadas a cada rodada
+// a posição 0 desse vetor refere-se ao número de cartas que podem ser descartadas
 int *cardsPositionCanIDiscard(Hand myHand, Game *game)
 {
   int *cardsPosition = malloc(sizeof(int));
@@ -57,7 +57,7 @@ int *cardsPositionCanIDiscard(Hand myHand, Game *game)
   return cardsPosition;
 }
 
-//verifica se o bot não possui aquele naipe (ou seja, se comprou uma carta quando o table tinha esse naipe)
+// verifica se o bot não possui aquele naipe (ou seja, se comprou uma carta quando o table tinha esse naipe)
 int checkIfBotDontHaveThisNaipe(Hand botHand, Card card)
 {
   for (int i = 0; i < botHand.tam; i++)
@@ -87,10 +87,14 @@ int makeABetterChoice(Hand myHand, Game *game, int *cardPositions)
     for (int i = 1; i <= cardPositions[0]; i++)
     {
       cardInt = convertCardToInt(myHand.cards[cardPositions[i]]);
-      if (cardInt == JOKER || cardInt == JACK)
-      {
+      if (cardInt == JACK)
         return cardPositions[i];
-      }
+    }
+    for (int i = 1; i <= cardPositions[0]; i++)
+    {
+      cardInt = convertCardToInt(myHand.cards[cardPositions[i]]);
+      if (cardInt == JOKER)
+        return cardPositions[i];
     }
   }
 
@@ -98,7 +102,7 @@ int makeABetterChoice(Hand myHand, Game *game, int *cardPositions)
   for (int i = 1; i <= cardPositions[0]; i++)
   {
     cardInt = convertCardToInt(myHand.cards[cardPositions[i]]);
-    if (cardInt == QUEEN && game->previousBot.cardsQuantity <= game->nextBot.cardsQuantity)
+    if (cardInt == QUEEN)
     {
       int queenCardPosition = cardPositions[i];
 
@@ -108,15 +112,22 @@ int makeABetterChoice(Hand myHand, Game *game, int *cardPositions)
       }
     }
   }
-  //verifica se há algum rei que possa ser jogado
+  // verifica se há algum rei que possa ser jogado
   for (int i = 1; i <= cardPositions[0]; i++)
   {
     cardInt = convertCardToInt(myHand.cards[cardPositions[i]]);
-    if(cardInt == KING){
+    if (cardInt == KING)
+    {
       return cardPositions[i];
     }
   }
-  //verifica se há alguma carta simples (carta sem ação) a ser jogada.
+  // verifica se há alguma carta com o naipe ou o valor das possíveis cartas que o próximo bot não tenha
+  for (int i = 1; i <= cardPositions[0]; i++)
+  {
+    if (hasTheCard(game->nextBot.buyedHand, myHand.cards[cardPositions[i]]) >= 0)
+      return cardPositions[i];
+  }
+  // verifica se há alguma carta simples (carta sem ação) a ser jogada.
   for (int i = 1; i <= cardPositions[0]; i++)
   {
     isSpecialCard = isSpecial(myHand.cards[cardPositions[i]]);
@@ -124,13 +135,6 @@ int makeABetterChoice(Hand myHand, Game *game, int *cardPositions)
     {
       return cardPositions[i];
     }
-  }
-
-  // verifica se há alguma carta com o naipe ou o valor das possíveis cartas que o próximo bot não tenha
-  for (int i = 1; i <= cardPositions[0]; i++)
-  {
-    if (hasTheCard(game->nextBot.buyedHand, myHand.cards[cardPositions[i]]) >= 0)
-      return cardPositions[i];
   }
 
   return -1;
@@ -149,7 +153,7 @@ int makeAChoice(Hand myHand, Game *game)
   // debug("Previous bot:");
   // printBot(game->previousBot);
 
-  if (cardsPosition[0] == 1) //caso de só ter uma carta possível de descartar
+  if (cardsPosition[0] == 1) // caso de só ter uma carta possível de descartar
   {
     return cardsPosition[1];
   }
