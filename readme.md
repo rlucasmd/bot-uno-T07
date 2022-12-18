@@ -1,7 +1,7 @@
 # 🤖 BOT-UNO
 Este é um projeto de um bot implementado em linguagem C, capaz de jogar essa [versão](https://github.com/amccampos/uno/blob/main/readme.md) do uno.
 
-O projeto é uma das atividades da disciplina de **Introdução às Tecnicas de Programação**.
+O projeto é uma das atividades da disciplina de **Introdução às Tecnicas de Programação**, [link para o repositório](https://github.com/rlucasmd/bot-uno-T07).
 * **Instituição**: UFRN
 * **Semestre**: 2022.2
 * **Turma**: T07
