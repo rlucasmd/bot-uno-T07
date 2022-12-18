@@ -21,6 +21,13 @@ enum Suits
   SPADE = 3,
 };
 
+enum Actions
+{
+  DISCARD = 0,
+  BUY = 1,
+  TURN = 2,
+};
+
 typedef struct
 {
   char value[3];
@@ -35,9 +42,28 @@ typedef struct
 
 typedef struct
 {
-  char players[6][MAX_ID_SIZE];
-  int players_count;
+  char botId[MAX_ID_SIZE];
+  int cardsQuantity;
+  Hand buyedHand;
+} Player;
+
+typedef struct
+{
+  char action[10];
+  char complement[10];
+  char secondComplement[10];
+} GameAction;
+
+typedef struct
+{
+  char myId[MAX_ID_SIZE];
+  Player players[6];
+  int playersCount;
+  int botTurnIndex;
+  int flux;
+  Player nextBot, previousBot;
   Card table;
   int shouldBuySomeCard;
+  GameAction *gameAction;
 } Game;
 #endif

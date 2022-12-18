@@ -1,2 +1,4 @@
-bot_C
+bot_D
 *.o
+main
+.vscode

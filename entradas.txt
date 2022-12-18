@@ -1,5 +1,0 @@
-PLAYERS b1 b2 b3
-YOU b1
-HAND [ A♥ A♦ A♣ 10♠ 2♦ A♦ 10♣ ]
-TABLE A♥
-TURN b1

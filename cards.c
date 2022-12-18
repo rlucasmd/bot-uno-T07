@@ -1,11 +1,13 @@
+//funções que "operam" no nível da estrutura das cartas 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "definitions.h"
+//vetor com as naipes do jogo
+char suits[4][4] = {{-30, -103, -91, 0}, {-30, -103, -90, 0}, {-30, -103, -93, 0}, {-30, -103, -96, 0}};
 
-char suits[4][4] = {{226, 153, 165, 0}, {226, 153, 166, 0}, {226, 153, 163, 0}, {226, 153, 160, 0}};
-
+//recebe o valor correspondete à enumeração dos naipes e retorna a string desse naipe 
 char *choseNaipe(int i)
 {
   return suits[i];
@@ -13,11 +15,11 @@ char *choseNaipe(int i)
 
 int naipeToInt(char *naipe)
 {
-  if (strcmp(naipe, "♥") == 0)
+  if (strcmp(naipe, suits[HEART]) == 0)
     return HEART;
-  if (strcmp(naipe, "♦") == 0)
+  if (strcmp(naipe, suits[DIAMONDS]) == 0)
     return DIAMONDS;
-  if (strcmp(naipe, "♣") == 0)
+  if (strcmp(naipe, suits[CLUB]) == 0)
     return CLUB;
   return SPADE;
 }
@@ -43,7 +45,7 @@ Card makeCard(char *cardString)
   }
   return myCard;
 }
-
+// Retorna um inteiro correspondente ao valor da carta (retorna 0 se não for uma carta especial) 
 int convertCardToInt(Card card)
 {
   int isV = strcmp(card.value, "V");
@@ -55,5 +57,11 @@ int convertCardToInt(Card card)
   int isA = strcmp(card.value, "A");
   if (isA == 0)
     return ACE;
+  int isD = strcmp(card.value, "D");
+  if (isD == 0)
+    return QUEEN;
+  int isK = strcmp(card.value, "R");
+  if (isK == 0)
+    return KING;
   return 0;
 }
